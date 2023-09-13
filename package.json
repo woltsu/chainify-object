@@ -10,7 +10,7 @@
     "dist"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
     "build": "tsup ./src/index.ts",
     "tsc": "tsc"
   },
@@ -19,6 +19,7 @@
     "@tsconfig/node18": "^18.2.2",
     "@types/node": "^20.6.0",
     "tsup": "^7.2.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.4"
   }
 }

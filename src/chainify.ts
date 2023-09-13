@@ -1,6 +1,5 @@
 import { Builder, ChainifyOpts, UnknownPromise } from "./types";
 
-// TODO: What if then is never triggered?
 export const chainify = <T extends object>(
   target: T,
   opts: ChainifyOpts = { serial: true }
@@ -9,20 +8,16 @@ export const chainify = <T extends object>(
 
   const proxy = new Proxy(target, {
     get: (target, prop, receiver) => {
-      if (prop === "then") {
-        return Reflect.get(target, prop, receiver);
+      const targetProperty = Reflect.get(target, prop, receiver);
+
+      if (typeof targetProperty !== "function" || prop === "then") {
+        return targetProperty;
       }
 
-      const chainedFunction = (...p: unknown[]) => {
-        promises.push([
-          Reflect.get(target, prop, receiver) as UnknownPromise,
-          p,
-        ]);
-
+      return (...p: unknown[]) => {
+        promises.push([targetProperty as UnknownPromise, p]);
         return proxy;
       };
-
-      return chainedFunction;
     },
   }) as Builder<T>;
 
@@ -32,7 +27,7 @@ export const chainify = <T extends object>(
         await Promise.resolve(promise(...p));
       }
     } else {
-      await Promise.all(promises.map(([promise, p]) => promise(p)));
+      await Promise.all(promises.map(([promise, p]) => promise(...p)));
     }
 
     promises = [];

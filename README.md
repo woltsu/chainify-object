@@ -1,7 +1,7 @@
 # chainify-object
 
 > [!NOTE]
-> This tool is primarly a POC and has not been battle-tested in production
+> This tool is primarily a POC and has not been battle-tested in production
 
 Make any object's functions chainable, without losing the types! Works for class instances as well.
 
